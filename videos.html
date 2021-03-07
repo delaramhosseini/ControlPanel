@@ -7,7 +7,7 @@
 <body>
 
 {% for video in videos %}
-       <a href="">{{ video.text }}</a>
+       <a href="{% url 'app1:video_detail' video.id %}">{{ video.caption }}</a>
 {% endfor %}
 
 <a href="{% url 'app1:teacher_upload' %}">Upload</a>

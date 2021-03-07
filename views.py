@@ -10,39 +10,14 @@ from django.contrib import auth,redirects
 from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
 from app1.form import *
+from django.contrib.auth import login,authenticate
+from django.template import RequestContext
 
 
+def home(request):
+    text={}
+    return render(request, 'app1/home.html', text)
 
-class IndexView(generic.ListView):
-    template_name = 'app1/index.html'
-    context_object_name = 'latest_question_list'
-
-    def get_queryset(self):
-        return Question.objects.filter(pub_data__lte=timezone.now()).order_by('-pub_data')[:5]
-
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'app1/detail.html'
-
-    def get_queryset(self):
-        return Question.objects.filter(pub_data__lte=timezone.now())
-
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'app1/results.html'
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        return render(request, 'app1/detail.html', {'question': question,'error_message': "You didn't select a choice.",})
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('app1:login'))
 
 def teacher_home(request):
     text ={}
@@ -56,6 +31,16 @@ def teacher_video(request):
     videos = Video.objects.all()
     text={'videos': videos}
     return render(request, 'app1/videos.html', text)
+
+def student_video(request):
+    videos =Video.objects.all()
+    text={'videos': videos}
+    return render(request, 'app1/student_video.html', text)
+
+def student_exercise(request):
+    exercises = Exercise.objects.all()
+    text = {'exercises': exercises}
+    return render(request, 'app1/student_exercise.html', text)
 
 def teacher_exercise(request):
     exercises = Exercise.objects.all()
@@ -85,20 +70,31 @@ def teacher_upload(request):
         text={'form': form }
         return render(request, 'app1/teacher_upload.html', text)
 
-
-def login(request):
-    if request.method == 'POST':
-        user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
-        if user is not None:
-            auth.login(request, user)
-            return redirects('allproducts')
-        else:
-            return render(request, 'app1/login.html', {'error':'Invalid Username Or Password'})
+def student_answer(request):
+    form= CreateAnswer()
+    if request.method=='POST':
+        form =CreateAnswer(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('your file has been uploaded')
     else:
-        return render(request, 'app1/login.html')
+        text={'form': form }
+        return render(request, 'app1/student_answer.html', text)
 
-def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-        return redirects('index')
+def video_detail(request,video_id):
+    vid = Video.objects.get(id=video_id)
+    text={'video':vid}
+    return render(request, 'app1/video_detail.html', text)
+
+def exercise_detail(request, exercise_id):
+    exer = Exercise.objects.get(id=exercise_id)
+    text={'exercise':exer}
+    return render(request, 'app1/exercise_detail.html', text)
+
+
+def exercise_detail_teacher(request, exercise_id):
+    exer = Exercise.objects.get(id=exercise_id)
+    text={'exercise':exer}
+    return render(request, 'app1/exercise_detail_teacher.html', text)
+
 
