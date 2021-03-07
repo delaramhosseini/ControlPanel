@@ -1,0 +1,16 @@
+<html lang="en" ></html>
+
+
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+{% for video in videos %}
+       <a href="">{{ video.text }}</a>
+{% endfor %}
+
+<a href="{% url 'app1:teacher_upload' %}">Upload</a>
+
+
+</body>

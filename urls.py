@@ -10,5 +10,8 @@ urlpatterns = [
     path('<int:question_id>/vote/', views.vote, name='vote'),
     path('login/', views.login, name = 'login'),
     path('logout/', views.logout, name = 'logout'),
-    path('upload/', views.upload, name='upload'),
+    path('teacher_home/',views.teacher_home, name='teacher_home'),
+    path('student_home', views.student_home, name='student_home'),
+    path('teacher_video/', views.teacher_video, name='teacher_video'),
+    path('teacher_video/upload', views.teacher_upload, name = 'teacher_upload'),
 ]

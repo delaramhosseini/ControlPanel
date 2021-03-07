@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import loader
-from .models import Question, Choice
+from .models import *
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 from django.contrib import auth,redirects
 from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
+from app1.form import CreateVideo
+
+
 
 class IndexView(generic.ListView):
     template_name = 'app1/index.html'
@@ -41,6 +44,28 @@ def vote(request, question_id):
         selected_choice.save()
         return HttpResponseRedirect(reverse('app1:login'))
 
+def teacher_home(request):
+    text ={}
+    return render(request, 'app1/teacher_home.html', text)
+
+def student_home(request):
+    text={}
+    return render(request, 'app1/student_home.html', text)
+
+def teacher_video(request):
+    videos = Video.objects.all()
+    text={'videos': videos}
+    return render(request, 'app1/videos.html', text)
+
+def teacher_upload(request):
+    form= CreateVideo()
+    if request.method=='POST':
+        form =CreateVideo(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('your file has been uploaded')
+    text={'form': form }
+    return render(request, 'app1/teacher_upload.html', text)
 
 
 def login(request):
@@ -59,9 +84,3 @@ def logout(request):
         auth.logout(request)
         return redirects('index')
 
-def upload(request):
-    if request.method=='post':
-        uploaded_file= request.FILES['document']
-        fs= FileSystemStorage()
-        fs.save(uploaded_file.name, uploaded_file)
-    return render(request, 'app1/upload.html')
