@@ -14,4 +14,6 @@ urlpatterns = [
     path('student_home', views.student_home, name='student_home'),
     path('teacher_video/', views.teacher_video, name='teacher_video'),
     path('teacher_video/upload', views.teacher_upload, name = 'teacher_upload'),
+    path('teacher_exercise/', views.teacher_exercise, name='teacher_exercise'),
+    path('teacher_exercise/upload', views.teacher_upload_exercise, name='teacher_upload_exercise')
 ]

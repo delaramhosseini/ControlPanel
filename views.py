@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth,redirects
 from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
-from app1.form import CreateVideo
+from app1.form import *
 
 
 
@@ -57,6 +57,23 @@ def teacher_video(request):
     text={'videos': videos}
     return render(request, 'app1/videos.html', text)
 
+def teacher_exercise(request):
+    exercises = Exercise.objects.all()
+    text = {'exercises': exercises}
+    return render(request, 'app1/teacher_exercise.html', text)
+
+def teacher_upload_exercise(request):
+    form=CreateExercise()
+    if request.method=='POST':
+        form =CreateExercise(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('your file has been uploaded')
+    else:
+        text={'form': form }
+        return render(request, 'app1/teacher_upload_exercise.html', text)
+
+
 def teacher_upload(request):
     form= CreateVideo()
     if request.method=='POST':
@@ -64,8 +81,9 @@ def teacher_upload(request):
         if form.is_valid():
             form.save()
             return HttpResponse('your file has been uploaded')
-    text={'form': form }
-    return render(request, 'app1/teacher_upload.html', text)
+    else:
+        text={'form': form }
+        return render(request, 'app1/teacher_upload.html', text)
 
 
 def login(request):

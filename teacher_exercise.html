@@ -1,0 +1,16 @@
+<html lang="en" ></html>
+
+
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+{% for exercise in exercises %}
+       <a href="">{{ exercise.caption }}</a>
+{% endfor %}
+
+<a href="{% url 'app1:teacher_upload_exercise' %}">Upload</a>
+
+
+</body>
